@@ -27,20 +27,20 @@
 
       <!-- Middle Widget -->
       <WidgetArea>
-          <WidgetTitle title="DAU"/>
-          <BarChart :data="rawData"/>
+        <WidgetTitle title="DAU"/>
+        <BarChart :data="rawData1"/>
       </WidgetArea>
 
       <!-- Bottom Widgets -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          <WidgetArea>
-            <WidgetTitle title="Top Referral"/>
-            <PieChart />
-          </WidgetArea>
+        <WidgetArea>
+          <WidgetTitle title="Top Referral"/>
+          <PieChart :data="rawData2"/>
+        </WidgetArea>
 
-          <WidgetArea>
-            <WidgetTitle title="Top Referral"/>
-          </WidgetArea>
+        <WidgetArea>
+          <WidgetTitle title="Top Referral"/>
+        </WidgetArea>
       </div>
 
   </main>
@@ -58,9 +58,13 @@ import WidgetResult from '@/components/WidgetResult.vue'
 import PieChart from '@/components/PieChart.vue'
 import BarChart from '@/components/BarChart.vue'
 
+import { dataFormatter, sorting } from '@/components/module/dataformat'
+
 import API from '@/apis'
 
-const rawData = ref([])
+const rawData1 = ref([])
+const rawData2 = ref([])
+
 const totalUnique = ref({}) // 접속유저
 const totalEvent = ref({}) // 접속횟수
 
@@ -104,17 +108,37 @@ const getEvent1 = async () => {
   return chart
 }
 
+const getEvent3 = async () => {
+  const { data } = await API.event3()
+  const rawData = dataFormatter(data)
+
+  const chart = []
+  let sum = 0 // Top 5 외 나머지들은 모두 합산
+
+  const sorted = sorting(rawData, 'unique_view', 'desc')
+
+  for (let i = 0; i < rawData.length; i++) {
+    const item = sorted[i]
+
+    if (i < 4) chart.push({ ...item, unique_view: Number(item.unique_view) })
+    else sum += Number(item.unique_view)
+  }
+
+  chart.push({ 'adbrix$event$abx:ref_host': 'etc', unique_view: sum })
+  return chart
+}
+
 /**
  * init 함수
  */
 const init = async () => {
-  const data = await getEvent1()
-  // console.log(data)
+  const data1 = await getEvent1()
+  const data3 = await getEvent3()
 
   const unique = { value: 0, diff: 0 } // 접속 유저의 총합
   const event = { value: 0, diff: 0 } // 접속 횟수의 총합
 
-  for (const item of data) {
+  for (const item of data1) {
     unique.value += Number(item.unique_view.value)
     event.value += Number(item.page_view.value)
   }
@@ -123,8 +147,8 @@ const init = async () => {
   // console.log(event)
 
   // 어제 vs 오늘 접속 유저 비교
-  const yesterday = data[data.length - 1]
-  const today = data[data.length - 2]
+  const yesterday = data1[data1.length - 1]
+  const today = data1[data1.length - 2]
 
   unique.diff = Number(yesterday.unique_view.value) - Number(today.unique_view.value)
   event.diff = Number(yesterday.page_view.value) - Number(today.page_view.value)
@@ -133,7 +157,8 @@ const init = async () => {
   totalUnique.value = unique
   totalEvent.value = event
 
-  rawData.value = data
+  rawData1.value = data1
+  rawData2.value = data3
 }
 
 init()

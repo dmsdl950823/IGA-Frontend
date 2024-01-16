@@ -13,7 +13,7 @@ import {
   GridComponent,
   LegendComponent
 } from 'echarts/components'
-import VChart, { THEME_KEY } from 'vue-echarts'
+import VChart from 'vue-echarts'
 import { ref, watchEffect } from 'vue'
 
 use([

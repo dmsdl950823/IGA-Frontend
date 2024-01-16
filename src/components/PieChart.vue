@@ -12,8 +12,8 @@ import {
   TooltipComponent,
   LegendComponent
 } from 'echarts/components'
-import VChart, { THEME_KEY } from 'vue-echarts'
-import { ref, provide } from 'vue'
+import VChart from 'vue-echarts'
+import { ref, watchEffect } from 'vue'
 
 use([
   CanvasRenderer,
@@ -23,7 +23,40 @@ use([
   LegendComponent
 ])
 
-// provide(THEME_KEY, 'dark')
+const props = defineProps({
+  data: Array
+})
+
+const rawData = ref([])
+const legend = ref([])
+const seriesPie = ref([])
+
+const setData = ({ value: data = [] }) => {
+  const colors = ['#0F4ABF', '#163E73', '#327AD9', '#CEDEF2', '#4BA4F2']
+  const seriesData = []
+  const legendData = []
+
+  if (data.length === 0) return { seriesData, legendData }
+
+  for (let i = 0; i < 5; i++) { // Top 5
+    const item = data[i]
+    const name = item['adbrix$event$abx:ref_host']
+    const value = item.unique_view
+
+    seriesData.push({ name, value, itemStyle: { color: colors[i] } })
+    legendData.push(name)
+  }
+
+  return { seriesData, legendData }
+}
+
+watchEffect(() => {
+  rawData.value = props.data
+  const { seriesData, legendData } = setData(rawData)
+
+  seriesPie.value = seriesData
+  legend.value = legendData
+})
 
 const option = ref({
   tooltip: {
@@ -34,7 +67,8 @@ const option = ref({
     orient: 'horizontal',
     align: 'auto',
     bottom: 'bottom',
-    data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines']
+    data: legend
+    // data: ['Direct', 'Email', 'Ad Networks', 'Video Ads', 'Search Engines']
   },
   series: [
     {
@@ -42,13 +76,14 @@ const option = ref({
       type: 'pie',
       radius: '60%',
       center: ['50%', '50%'],
-      data: [
-        { value: 505, name: 'Direct', itemStyle: { color: '#0F4ABF' } },
-        { value: 310, name: 'Email', itemStyle: { color: '#163E73' } },
-        { value: 234, name: 'Ad Networks', itemStyle: { color: '#327AD9' } },
-        { value: 135, name: 'Video Ads', itemStyle: { color: '#CEDEF2' } },
-        { value: 1548, name: 'Search Engines', itemStyle: { color: '#4BA4F2' } }
-      ],
+      data: seriesPie,
+      // data: [
+      //   { value: 505, name: 'Direct', itemStyle: { color: '#0F4ABF' } },
+      //   { value: 310, name: 'Email', itemStyle: { color: '#163E73' } },
+      //   { value: 234, name: 'Ad Networks', itemStyle: { color: '#327AD9' } },
+      //   { value: 135, name: 'Video Ads', itemStyle: { color: '#CEDEF2' } },
+      //   { value: 1548, name: 'Search Engines', itemStyle: { color: '#4BA4F2' } }
+      // ],
       emphasis: {
         itemStyle: {
           shadowBlur: 10,
