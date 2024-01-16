@@ -8,8 +8,8 @@
       :tag="props.tag"
     />
     <WidgetResult
-      :value="200"
-      :variance="200"
+      :value="props.value"
+      :variance="props.variance"
     />
   </WidgetArea>
 </template>

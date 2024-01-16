@@ -3,7 +3,7 @@
     :title="props.title"
     :editable="props.editable"
   >
-    <PieChart :data="[]" />
+    <PieChart :data="props.data" />
   </WidgetArea>
 </template>
 

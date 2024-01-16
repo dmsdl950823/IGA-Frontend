@@ -1,5 +1,9 @@
 <template>
-  <v-chart class="chart" :option="option" autoresize />
+  <v-chart
+    class="chart"
+    :option="option"
+    autoresize
+  />
 </template>
 
 <script setup>
@@ -11,7 +15,8 @@ import {
   ToolboxComponent,
   TooltipComponent,
   GridComponent,
-  LegendComponent
+  LegendComponent,
+  DataZoomComponent
 } from 'echarts/components'
 import VChart from 'vue-echarts'
 import { ref, watchEffect } from 'vue'
@@ -21,6 +26,7 @@ use([
   TooltipComponent,
   GridComponent,
   LegendComponent,
+  DataZoomComponent,
   BarChart,
   LineChart,
   CanvasRenderer,
@@ -28,7 +34,7 @@ use([
 ])
 
 const props = defineProps({
-  data: Array
+  data: { type: Array, default: () => [] }
 })
 
 // console.log(props, 'gg')
@@ -47,9 +53,9 @@ const setData = ({ value: data }) => {
   const lineData = [] // line data
 
   for (const item of data) {
-    const date = item.daily.value
-    const bar = item.page_view.value
-    const line = item.unique_view.value
+    const date = item.daily
+    const bar = item.page_view
+    const line = item.unique_view
 
     xAxisData.push(date)
     barData.push(bar)
@@ -66,8 +72,6 @@ watchEffect(() => {
   xAxis.value = xAxisData
   seriesBar.value = barData
   seriesLine.value = lineData
-
-  console.log()
 })
 
 // 차트 option 설정
@@ -83,7 +87,7 @@ const option = ref({
   },
   legend: {
     align: 'auto',
-    bottom: 'bottom',
+    bottom: '10%',
     data: ['Unique Event Count', 'Total Event Count']
   },
   xAxis: [
@@ -122,11 +126,7 @@ const option = ref({
     {
       name: 'Total Event Count',
       type: 'bar',
-      tooltip: {
-        valueFormatter: function (value) {
-          return value
-        }
-      },
+      tooltip: { valueFormatter: (value) => value.toLocaleString() },
       itemStyle: { color: '#4BA4F2' },
       // data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
       data: seriesBar
@@ -135,11 +135,7 @@ const option = ref({
       name: 'Unique Event Count',
       type: 'line',
       yAxisIndex: 1,
-      tooltip: {
-        valueFormatter: function (value) {
-          return value
-        }
-      },
+      tooltip: { valueFormatter: (value) => value.toLocaleString() },
       itemStyle: { color: '#0F4ABF' },
       data: seriesLine
     }
@@ -148,27 +144,28 @@ const option = ref({
   grid: {
     left: '5%', // 왼쪽 패딩 (기본값: '10%')
     right: '5%', // 오른쪽 패딩 (기본값: '10%')
-    top: '10%', // 위쪽 패딩 (기본값: '60')
-    bottom: '18%' // 아래쪽 패딩 (기본값: '40')
-  }
+    top: '15%', // 위쪽 패딩 (기본값: '60')
+    bottom: '25%' // 아래쪽 패딩 (기본값: '40')
+  },
 
-  // dataZoom: [
-  //   {
-  //     type: 'slider', // 슬라이더 형태로 표시
-  //     start: 0, // 기본 표시 범위의 시작 인덱스
-  //     end: 100 // 기본 표시 범위의 끝 인덱스
-  //   },
-  //   {
-  //     type: 'inside', // 차트 영역 안에서 스크롤 가능
-  //     start: 0,
-  //     end: 100
-  //   }
-  // ]
+  dataZoom: [
+    {
+      type: 'slider', // 슬라이더 형태로 표시
+      start: 80, // 기본 표시 범위의 시작 인덱스
+      end: 100, // 기본 표시 범위의 끝 인덱스
+      top: 0
+    },
+    {
+      type: 'inside', // 차트 영역 안에서 스크롤 가능
+      start: 0,
+      end: 100
+    }
+  ]
 })
 </script>
 
 <style scoped>
 .chart {
-  height: 400px;
+
 }
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <v-chart class="chart" :option="option" autoresize />
+  <v-chart
+    class="chart"
+    :option="option"
+    autoresize
+  />
 </template>
 
 <script setup>
@@ -24,7 +28,7 @@ use([
 ])
 
 const props = defineProps({
-  data: Array
+  data: { type: Array, default: () => [] }
 })
 
 const rawData = ref([])
@@ -75,7 +79,7 @@ const option = ref({
       name: 'Traffic Sources',
       type: 'pie',
       radius: '60%',
-      center: ['50%', '50%'],
+      center: ['50%', '40%'],
       data: seriesPie,
       // data: [
       //   { value: 505, name: 'Direct', itemStyle: { color: '#0F4ABF' } },

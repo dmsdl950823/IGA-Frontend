@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.vgl-layout {
+  --vgl-placeholder-bg: #4BA4F2;
+  /* --vgl-placeholder-opacity: 20%;
+  --vgl-placeholder-z-index: 2;
+
+  --vgl-item-resizing-z-index: 3;
+  --vgl-item-resizing-opacity: 60%;
+  --vgl-item-dragging-z-index: 3;
+  --vgl-item-dragging-opacity: 100%;
+
+  --vgl-resizer-size: 10px;
+  --vgl-resizer-border-color: #444;
+  --vgl-resizer-border-width: 2px; */
+}

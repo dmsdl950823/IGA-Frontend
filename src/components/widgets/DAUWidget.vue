@@ -3,7 +3,7 @@
     :title="props.title"
     :editable="props.editable"
   >
-    <BarChart :data="[]" />
+    <BarChart :data="props.data" />
   </WidgetArea>
 </template>
 
@@ -16,8 +16,5 @@ import baseProps from '@/components/module/widgetprops'
 const props = defineProps({
   ...baseProps
 })
+
 </script>
-
-<style scoped>
-
-</style>
