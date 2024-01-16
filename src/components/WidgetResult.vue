@@ -1,5 +1,5 @@
 <template>
-  <strong class="flex mt-3 text-5xl font-bold">{{ value }}</strong>
+  <strong class="flex mt-3 text-5xl font-bold">{{ locale }}</strong>
 
   <span :class="`flex items-center text-${type.color}-500 mt-4`">
     <font-awesome-icon :icon="['fas', type.icon]" />
@@ -19,9 +19,11 @@ const props = defineProps({
   }
 })
 
-const type = (props.varians < 0)
+const type = (props.variance < 0)
   ? { icon: 'arrow-down', color: 'blue' }
   : { icon: 'arrow-up', color: 'red' }
+
+const locale = props.value.toLocaleString()
 
 </script>
 
