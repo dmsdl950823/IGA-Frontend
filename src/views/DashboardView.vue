@@ -28,12 +28,14 @@
       <!-- Middle Widget -->
       <WidgetArea>
           <WidgetTitle title="DAU"/>
+          <BarChart />
       </WidgetArea>
 
       <!-- Bottom Widgets -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
           <WidgetArea>
             <WidgetTitle title="Top Referral"/>
+            <PieChart />
           </WidgetArea>
 
           <WidgetArea>
@@ -53,6 +55,8 @@ import SumTag from '@/components/SumTag.vue'
 import WidgetTitle from '@/components/WidgetTitle.vue'
 import WidgetArea from '@/components/WidgetArea.vue'
 import WidgetResult from '@/components/WidgetResult.vue'
+import PieChart from '@/components/PieChart.vue'
+import BarChart from '@/components/BarChart.vue'
 
 import API from '@/apis'
 
