@@ -14,14 +14,14 @@
               <WidgetTitle title="접속유저"/>
 
               <SumTag title="SUM" tag="Unique Event Count"/>
-              <strong class="flex mt-3 text-5xl font-bold">18,204</strong>
+              <WidgetResult :value="18204" :variance="-90"/>
           </WidgetArea>
 
           <WidgetArea>
               <WidgetTitle title="접속횟수"/>
 
               <SumTag title="SUM" tag="Total Event Count"/>
-              <strong class="flex mt-3 text-5xl font-bold">18,204</strong>
+              <WidgetResult :value="796564" :variance="100"/>
           </WidgetArea>
       </div>
 
@@ -50,6 +50,7 @@
 import SumTag from '@/components/SumTag.vue'
 import WidgetTitle from '@/components/WidgetTitle.vue'
 import WidgetArea from '@/components/WidgetArea.vue'
+import WidgetResult from '@/components/WidgetResult.vue'
 </script>
 
 <style lang="scss" scoped></style>

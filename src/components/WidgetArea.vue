@@ -1,5 +1,5 @@
 <template>
-  <div class="widget bg-white border p-4 mb-4 shadow-md">
+  <div class="widget bg-white border p-10 mb-4 shadow-md">
     <slot />
   </div>
 </template>
