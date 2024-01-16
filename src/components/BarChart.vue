@@ -14,7 +14,7 @@ import {
   LegendComponent
 } from 'echarts/components'
 import VChart, { THEME_KEY } from 'vue-echarts'
-import { ref, provide } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 use([
   ToolboxComponent,
@@ -27,8 +27,50 @@ use([
   UniversalTransition
 ])
 
-// provide(THEME_KEY, 'dark')
+const props = defineProps({
+  data: Array
+})
 
+// console.log(props, 'gg')
+const rawData = ref([])
+const xAxis = ref([])
+const seriesBar = ref([])
+const seriesLine = ref([])
+
+/**
+ * bar/line 동시 데이터 정의
+ * @param {Object} rawData
+ */
+const setData = ({ value: data }) => {
+  const xAxisData = [] // xAxis
+  const barData = [] // bar data
+  const lineData = [] // line data
+
+  for (const item of data) {
+    const date = item.daily.value
+    const bar = item.page_view.value
+    const line = item.unique_view.value
+
+    xAxisData.push(date)
+    barData.push(bar)
+    lineData.push(line)
+  }
+
+  return { xAxisData, barData, lineData }
+}
+
+watchEffect(() => {
+  rawData.value = props.data
+  const { xAxisData, barData, lineData } = setData(rawData)
+
+  xAxis.value = xAxisData
+  seriesBar.value = barData
+  seriesLine.value = lineData
+
+  console.log()
+})
+
+// 차트 option 설정
 const option = ref({
   tooltip: {
     trigger: 'axis',
@@ -42,12 +84,12 @@ const option = ref({
   legend: {
     align: 'auto',
     bottom: 'bottom',
-    data: ['Temperature', 'Evaporation']
+    data: ['Unique Event Count', 'Total Event Count']
   },
   xAxis: [
     {
       type: 'category',
-      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+      data: xAxis, // ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
       axisPointer: {
         type: 'shadow'
       }
@@ -55,29 +97,30 @@ const option = ref({
   ],
   yAxis: [
     {
+      // 좌측 차트 내용
       type: 'value',
-      // name: 'Precipitation',
       min: 0,
-      max: 250,
-      interval: 50,
+      interval: 3000,
       axisLabel: {
-        formatter: '{value}k'
+        formatter: function (value) {
+          if (value >= 1000) return (value / 1000).toFixed(0) + 'k'
+          else return value
+          // return '{value}k'
+        }
       }
     },
     {
+      // 우측 차트 내용
       type: 'value',
-      // name: 'TTT',
       min: 0,
-      max: 25,
-      interval: 5,
-      axisLabel: {
-        formatter: '{value}'
-      }
+      // max: 25,
+      interval: 100,
+      axisLabel: { formatter: '{value}' }
     }
   ],
   series: [
     {
-      name: 'Evaporation',
+      name: 'Total Event Count',
       type: 'bar',
       tooltip: {
         valueFormatter: function (value) {
@@ -85,12 +128,11 @@ const option = ref({
         }
       },
       itemStyle: { color: '#4BA4F2' },
-      data: [
-        2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
-      ]
+      // data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+      data: seriesBar
     },
     {
-      name: 'Temperature',
+      name: 'Unique Event Count',
       type: 'line',
       yAxisIndex: 1,
       tooltip: {
@@ -99,7 +141,7 @@ const option = ref({
         }
       },
       itemStyle: { color: '#0F4ABF' },
-      data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+      data: seriesLine
     }
   ],
 

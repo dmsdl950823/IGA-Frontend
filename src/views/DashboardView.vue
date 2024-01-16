@@ -28,7 +28,7 @@
       <!-- Middle Widget -->
       <WidgetArea>
           <WidgetTitle title="DAU"/>
-          <BarChart />
+          <BarChart :data="rawData"/>
       </WidgetArea>
 
       <!-- Bottom Widgets -->
@@ -60,6 +60,7 @@ import BarChart from '@/components/BarChart.vue'
 
 import API from '@/apis'
 
+const rawData = ref([])
 const totalUnique = ref({}) // 접속유저
 const totalEvent = ref({}) // 접속횟수
 
@@ -131,6 +132,8 @@ const init = async () => {
   // 최종 결과 값 저장
   totalUnique.value = unique
   totalEvent.value = event
+
+  rawData.value = data
 }
 
 init()
