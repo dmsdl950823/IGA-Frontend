@@ -1,23 +1,34 @@
 <template>
   <div class="bg-gray-100">
-     <!-- Navigation -->
-     <nav class="bg-blue-500 p-4">
-      <a class="text-white" href="#">Dashboard</a>
-    </nav>
+    <!-- Navigation -->
+    <header class="flex items-center justify-between bg-blue-500 p-4">
+      <nav class="flex items-center justify-between bg-blue-500 p-4">
+        <a class="text-white" href="#">Dashboard</a>
+
+      </nav>
+
+      <div class="flex items-center gap-2" v-if="!editable">
+        <button class="bg-blue-400 hover:bg-blue-600 px-4 py-2 rounded-md text-white" @click="editable = !editable">편집</button>
+      </div>
+      <div class="flex items-center gap-2" v-else>
+        <button class="bg-blue-400 hover:bg-blue-600 px-4 py-2 rounded-md text-white" @click="editable = !editable">편집취소</button>
+        <button class="bg-blue-400 hover:bg-blue-600 px-4 py-2 rounded-md text-white" @click="editable = !editable">편집완료</button>
+      </div>
+    </header>
 
     <!-- Dashboard Main Content -->
     <main class="container mx-auto mt-8">
 
       <!-- Top Widgets -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-          <WidgetArea>
+          <WidgetArea :editable="editable">
             <WidgetTitle title="접속유저"/>
 
             <SumTag title="SUM" tag="Unique Event Count"/>
             <WidgetResult :value="totalUnique.value" :variance="totalUnique.diff"/>
           </WidgetArea>
 
-          <WidgetArea>
+          <WidgetArea :editable="editable">
               <WidgetTitle title="접속횟수"/>
 
               <SumTag title="SUM" tag="Total Event Count"/>
@@ -26,19 +37,19 @@
       </div>
 
       <!-- Middle Widget -->
-      <WidgetArea>
+      <WidgetArea :editable="editable">
         <WidgetTitle title="DAU"/>
         <BarChart :data="rawData1"/>
       </WidgetArea>
 
       <!-- Bottom Widgets -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <WidgetArea>
+        <WidgetArea :editable="editable">
           <WidgetTitle title="Top Referral"/>
           <PieChart :data="rawData2"/>
         </WidgetArea>
 
-        <WidgetArea>
+        <WidgetArea :editable="editable">
           <WidgetTitle title="Top Referral"/>
         </WidgetArea>
       </div>
@@ -67,6 +78,8 @@ const rawData2 = ref([])
 
 const totalUnique = ref({}) // 접속유저
 const totalEvent = ref({}) // 접속횟수
+
+const editable = ref(false)
 
 /**
  * json 데이터 fetching

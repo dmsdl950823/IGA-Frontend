@@ -124,7 +124,7 @@ const option = ref({
       type: 'bar',
       tooltip: {
         valueFormatter: function (value) {
-          return value + ' ml'
+          return value
         }
       },
       itemStyle: { color: '#4BA4F2' },
@@ -137,7 +137,7 @@ const option = ref({
       yAxisIndex: 1,
       tooltip: {
         valueFormatter: function (value) {
-          return value + ' °C'
+          return value
         }
       },
       itemStyle: { color: '#0F4ABF' },
