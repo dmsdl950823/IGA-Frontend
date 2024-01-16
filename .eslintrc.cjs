@@ -5,7 +5,7 @@ module.exports = {
   },
   extends: [
     'standard',
-    'plugin:vue/vue3-essential'
+    'plugin:vue/vue3-recommended'
   ],
   overrides: [
     {
