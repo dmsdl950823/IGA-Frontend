@@ -76,12 +76,12 @@ const THead = {
         <div class="row">
           <div class="grid grid-cols-2">
             <div class="-label flex justify-between items-center">
-              Country(IP) &gt; Region (IP) &gt; City (IP)
+              <span class="-text"> Country(IP) &gt; Region (IP) &gt; City (IP) </span>
 
               <font-awesome-icon class="-cursor" icon={['fas', 'arrow-up-wide-short']} />
             </div>
             <div class="-value flex justify-between items-center">
-              sum (Unique Event Count)
+              <span class="-text"> sum (Unique Event Count) </span>
 
               <font-awesome-icon class="-cursor" icon={['fas', 'arrow-up-wide-short']} />
             </div>

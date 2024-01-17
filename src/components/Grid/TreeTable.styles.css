@@ -43,6 +43,13 @@
 .-value {
   padding-left: 10px;
 }
+.-text {
+  width: 80%;
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .-toggle-icon {
   color: #aaa;
   cursor: pointer;
@@ -64,4 +71,5 @@
 }
 .-cursor {
   cursor: pointer;
+  padding-right: 10px;
 }
