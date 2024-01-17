@@ -1,27 +1,52 @@
-import { ref, h } from 'vue'
+import { ref } from 'vue'
 import './TreeTable.styles.css'
 
-const Tree = {
-  props: ['node'],
-  setup ({ node }) {
+const Node = {
+  name: 'Node',
+  props: ['label', 'value', 'children'],
+  setup (props) {
     const isOpen = ref(false)
 
-    const toggleNode = () => {
-      isOpen.value = !isOpen.value
+    const toggle = () => { isOpen.value = !isOpen.value }
+
+    return {
+      isOpen,
+      toggle,
+      props
     }
+  },
+  render () {
+    const { label, value, children } = this.props
 
-    return () => (
-      <ul>
-        <li>
-          <div class="cursor-pointer" onClick={toggleNode}>
-            { node.children && <span>{isOpen.value ? '[-]' : '[+]'}</span> }
+    const hasChildren = (children && children.length) > 0
+    const icon = hasChildren ? (<font-awesome-icon class="-toggle-icon" icon={['fas', this.isOpen ? 'circle-minus' : 'circle-plus']} onClick={this.toggle} />) : null
 
-            {node.label}
+    return (
+      <li class="row">
+        <div class="grid grid-cols-2">
+          <div class="flex items-center gap-2 -label">
+            { this.isOpen }
+            { icon }
+            <span>{ label }</span>
           </div>
-            {isOpen.value && node.children && (
-            <Tree data={node.children} />
-            )}
-        </li>
+          <div class="-value">{value}</div>
+        </div>
+        {hasChildren && this.isOpen ? <NodeList items={children} /> : null}
+      </li>
+    )
+  }
+}
+
+const NodeList = {
+  name: 'NodeList',
+  props: ['items'],
+  setup (props) {
+    return { props }
+  },
+  render () {
+    return (
+      <ul class="-depth">
+        { this.props.items.map((item, index) => <Node key={index} {...item} />) }
       </ul>
     )
   }
@@ -63,38 +88,101 @@ const Tree = {
 // }
 
 export default {
+  name: 'TreeTable',
   props: {
     treeData: { type: Array, default: () => [] }
   },
   setup ({ treeData }) {
-    console.log(treeData)
-
-    const nodeRecursion = items => {
-      const childNodes = items.map(({ label, value, children }) => {
-        if (children.length > 1) return nodeRecursion(children)
-
-        return (<div class="row">{label} : {value}</div>)
+    const setStatus = items => {
+      return items.map(item => {
+        const result = { ...item, isOpen: false }
+        if (item.children) result.children = setStatus(item.children)
+        return result
       })
-
-      // if (items.children) return nodeRecursion(items)
-
-      return (
-        <div class="test">
-          { childNodes }
-        </div>
-      )
     }
+
+    const rawData = setStatus(treeData)
+
+    console.log(rawData, 'ㅇ?')
 
     return () => {
       return (
+        <div class="grid-wrapper">
+          <h2>ㅎㅎ</h2>
+
           <div class="tree-wrapper">
-            { nodeRecursion(treeData) }
-            {/* <Tree nodes={treeData} /> */}
+            <NodeList items={rawData}/>
 
             {/* <h2>Sortable Table</h2>
             <Table data={tableData} /> */}
           </div>
+        </div>
       )
     }
   }
 }
+
+// export default {
+//   name: 'TreeTable',
+//   props: {
+//     treeData: { type: Array, default: () => [] }
+//   },
+//   setup ({ treeData }) {
+//     console.log(treeData)
+
+//     const nodeRecursion = items => {
+//       const childNodes = items.map(({ label, value, children, isOpen }) => {
+//         // console.log(items)
+//         const hasChildren = children.length > 1
+
+//         return (
+//           <li class="row">
+//             <div class="grid grid-cols-2">
+//               <div class="flex items-center gap-2 -label">
+//                   {isOpen}
+//                   { hasChildren ? (<font-awesome-icon class="-toggle-icon" icon={['fas', 'circle-plus']} onClick={() => (isOpen = !isOpen)} />) : null }
+//                 <span>{label}</span>
+//               </div>
+
+//               <div class="-value">{value}</div>
+//             </div>
+
+//             { (hasChildren && isOpen.value) ? nodeRecursion(children) : null }
+//           </li>)
+//       })
+
+//       return (
+//         <ul class="-depth">
+//           { childNodes }
+//         </ul>
+//       )
+//     }
+
+//     const setStatus = items => {
+//       return items.map(item => {
+//         const result = { ...item, isOpen: false }
+//         if (item.children) result.children = setStatus(item.children)
+//         return result
+//       })
+//     }
+
+//     const rawData = setStatus(treeData)
+
+//     console.log(rawData, 'ㅇ?')
+
+//     return () => {
+//       return (
+//         <div class="grid-wrapper">
+//           <h2>ㅎㅎ</h2>
+
+//           <div class="tree-wrapper">
+//             { nodeRecursion(rawData) }
+
+//             {/* <h2>Sortable Table</h2>
+//             <Table data={tableData} /> */}
+//           </div>
+//         </div>
+//       )
+//     }
+//   }
+// }
