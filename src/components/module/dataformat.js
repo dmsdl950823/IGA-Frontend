@@ -89,7 +89,7 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
       const item = { label: key, value }
 
       // 코드 key 나열 순서대로 재귀함수 실행
-      if (codeIdx <= max) {
+      if (codeIdx < max) {
         if (_children.length) item.children = grouping(_children, codeIdx + 1)
       }
 
