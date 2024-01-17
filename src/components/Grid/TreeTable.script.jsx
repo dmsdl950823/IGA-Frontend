@@ -3,7 +3,7 @@ import './TreeTable.styles.css'
 
 const Node = {
   name: 'Node',
-  props: ['label', 'value', 'children'],
+  props: ['label', 'value', 'children', 'depth'],
   setup (props) {
     const isOpen = ref(false)
 
@@ -16,22 +16,26 @@ const Node = {
     }
   },
   render () {
-    const { label, value, children } = this.props
+    const { depth, label, value, children } = this.props
 
     const hasChildren = (children && children.length) > 0
-    const icon = hasChildren ? (<font-awesome-icon class="-toggle-icon" icon={['fas', this.isOpen ? 'circle-minus' : 'circle-plus']} onClick={this.toggle} />) : null
+    const icon = hasChildren ? (<font-awesome-icon class="-toggle-icon" icon={['fas', this.isOpen ? 'circle-minus' : 'circle-plus']} onClick={this.toggle} />) : null // <div class="-empty" />
+    const count = hasChildren ? `(${children.length})` : null
 
     return (
-      <li class="row">
-        <div class="grid grid-cols-2">
+      <li class={['row', `-padding-${depth + 1}`]}>
+        <div class="content grid grid-cols-2">
           <div class="flex items-center gap-2 -label">
+            {/* { depth } */}
             { this.isOpen }
             { icon }
-            <span>{ label }</span>
+            <span>{ label } { count }</span>
           </div>
+
           <div class="-value">{value}</div>
         </div>
-        {hasChildren && this.isOpen ? <NodeList items={children} /> : null}
+
+        { hasChildren && this.isOpen ? <NodeList items={children} /> : null }
       </li>
     )
   }
@@ -44,48 +48,49 @@ const NodeList = {
     return { props }
   },
   render () {
+    const { items } = this.props
+
     return (
       <ul class="-depth">
-        { this.props.items.map((item, index) => <Node key={index} {...item} />) }
+        { items.map((item, index) => <Node key={index} {...item} />) }
       </ul>
     )
   }
 }
 
-// const Table = {
-//   props: ['data'],
-//   setup (props) {
-//     const sortColumn = ref(null)
+const THead = {
+  name: 'THead',
+  props: [],
+  setup () {
 
-//     const toggleSort = (column) => {
-//       sortColumn.value = column
-//     }
+  },
+  render () {
+    return (
+      <div class="tree-header">
+        <div class="row">
+          <div class="grid grid-cols-2">
+            <div class="-label">GroupBy</div>
+            <div class="-value">Matrics</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="grid grid-cols-2">
+            <div class="-label flex justify-between items-center">
+              Country(IP) &gt; Region (IP) &gt; City (IP)
 
-//     return () => (
-//       <table>
-//         <thead>
-//           <tr>
-//             {Object.keys(props.data[0]).map((column) => (
-//               <th onClick={() => toggleSort(column)}>
-//                 {column}
-//                 {sortColumn.value === column && ' 🔽'}
-//               </th>
-//             ))}
-//           </tr>
-//         </thead>
-//         <tbody>
-//           {props.data.map((row) => (
-//             <tr>
-//               {Object.values(row).map((value) => (
-//                 <td>{value}</td>
-//               ))}
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     )
-//   }
-// }
+              <font-awesome-icon class="-cursor" icon={['fas', 'arrow-up-wide-short']} />
+            </div>
+            <div class="-value flex justify-between items-center">
+              sum (Unique Event Count)
+
+              <font-awesome-icon class="-cursor" icon={['fas', 'arrow-up-wide-short']} />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 export default {
   name: 'TreeTable',
@@ -93,28 +98,26 @@ export default {
     treeData: { type: Array, default: () => [] }
   },
   setup ({ treeData }) {
-    const setStatus = items => {
+    // tree 상태 및 기타 필요 데이터 추가
+    const setStatus = (items, depth) => {
       return items.map(item => {
-        const result = { ...item, isOpen: false }
-        if (item.children) result.children = setStatus(item.children)
+        const result = { ...item, isOpen: false, depth }
+
+        if (item.children) result.children = setStatus(item.children, depth + 1)
         return result
       })
     }
 
-    const rawData = setStatus(treeData)
-
-    console.log(rawData, 'ㅇ?')
+    const rawData = setStatus(treeData, 0)
+    // console.log(rawData, 'ㅇ?')
 
     return () => {
       return (
         <div class="grid-wrapper">
-          <h2>ㅎㅎ</h2>
 
           <div class="tree-wrapper">
-            <NodeList items={rawData}/>
-
-            {/* <h2>Sortable Table</h2>
-            <Table data={tableData} /> */}
+          <THead />
+            <NodeList items={rawData} />
           </div>
         </div>
       )

@@ -1,24 +1,67 @@
 .grid-wrapper {
-  border: 1px solid seagreen;
-  height: calc(100% - 70px);
+  height: calc(100% - 50px);
+  font-size: 0.8em;
+  position: relative;
+  padding-top: 42px;
+  font-size: 10px;
+  border: 1px solid #eee;
+}
+.tree-header {
+  position: absolute;
+  top: 0; right: 0;
+  background-color: #fafafa;
+  width: 100%;
+  padding-right: 15px;
+  border-bottom: 1px solid #eee;
+  line-height: 25px;
+  font-weight: 500;
 }
 .tree-wrapper {
-  border: 1px solid red;
   overflow-y: auto;
   height: 100%;
 }
+.tree-wrapper > .-depth { border: none; }
 .-depth {
-  border: 1px solid blue;
-  /* padding-left: 20px; */
+  border-top: 1px solid #eee;
+}
+.row {
+  border-top: 1px solid #eee;
+  line-height: 2;
+  color: #aaa;
+}
+.row:first-child { border: none; }
+.content {
+  transition: background-color 0.2s ease;
+}
+.content:hover {
+  background-color: #fafafa;
 }
 .-label {
-  color: blue;
-  border: 1px solid salmon;
+  border-right: 1px solid #eeeeee;
+  padding-left: 10px;
 }
 .-value {
-  border: 1px solid blue;
+  padding-left: 10px;
 }
 .-toggle-icon {
-  border: 1px solid red;
+  color: #aaa;
+  cursor: pointer;
+}
+.-empty {
+  width: 14px;
+}
+.-padding-1 {
+  /* background-color: aqua; */
+}
+.-padding-2 .-label {
+  padding-left: 20px;
+}
+.-padding-3 .-label {
+  padding-left: 40px;
+}
+.-padding-4 .-label {
+  padding-left: 60px;
+}
+.-cursor {
   cursor: pointer;
 }

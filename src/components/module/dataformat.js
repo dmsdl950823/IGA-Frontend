@@ -69,7 +69,7 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
 
     for (const item of items) {
       const key = item[code]
-      if (!key) continue // "" 인 경우가 있음 (제외)
+      if (!key) continue // "" 인 경우가 있음 (제외?)
 
       const d = { ...item, raw: item }
 
@@ -83,10 +83,10 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
     // children 형식으로 변형
     const result = []
     for (const key in group) {
-      if (!key) continue // "" 인 경우가 있음 (제외)
+      if (!key) continue // "" 인 경우가 있음 (제외?)
 
       const { value, _children } = group[key]
-      const item = { label: key, value }
+      const item = { label: key || '-', value }
 
       // 코드 key 나열 순서대로 재귀함수 실행
       if (codeIdx < max) {
