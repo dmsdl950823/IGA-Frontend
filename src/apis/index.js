@@ -15,9 +15,16 @@ const event3 = async () => {
   return response.json()
 }
 
+const event4 = async () => {
+  // const response = await fetch(`${config.URL}/event_4.json`)
+  const response = await fetch('/event/event_4.json')
+  return response.json()
+}
+
 const API = {
   event1,
-  event3
+  event3,
+  event4
 }
 
 export default API

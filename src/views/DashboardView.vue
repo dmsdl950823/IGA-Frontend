@@ -36,62 +36,6 @@
           <!-- @resize="handleResize" -->
         </GridItem>
       </GridLayout>
-
-      <!-- //////// -->
-
-      <!-- Top Widgets -->
-      <!-- <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <WidgetArea :editable="editable">
-          <SumTag
-            title="SUM"
-            tag="Unique Event Count"
-          />
-          <WidgetResult
-            :value="totalUnique.value"
-            :variance="totalUnique.diff"
-          />
-        </WidgetArea>
-
-        <WidgetArea :editable="editable">
-          <SumTag
-            title="SUM"
-            tag="Total Event Count"
-          />
-          <WidgetResult
-            :value="totalEvent.value"
-            :variance="totalEvent.diff"
-          />
-        </WidgetArea>
-        <WidgetArea
-          :editable="editable"
-          title="접속횟수"
-        >
-          <SumTag
-            title="SUM"
-            tag="Total Event Count"
-          />
-          <WidgetResult
-            :value="totalEvent.value"
-            :variance="totalEvent.diff"
-          />
-        </WidgetArea>
-      </div>
-
-      <WidgetArea
-        :editable="editable"
-        title="DAU"
-      >
-        <BarChart :data="rawData1" />
-      </WidgetArea>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
-        <WidgetArea
-          :editable="editable"
-          title="Top Referral"
-        >
-          <PieChart :data="rawData2" />
-        </WidgetArea>
-      </div> -->
     </main>
   </div>
 </template>
@@ -106,7 +50,7 @@ import DAUWidget from '@/components/widgets/DAUWidget.vue'
 import TopReferralWidget from '@/components/widgets/TopReferralWidget.vue'
 import TopReferralGrid from '@/components/widgets/TopReferralGrid.vue'
 
-import { dataFormatter, sorting } from '@/components/module/dataformat'
+import { dataFormatter, sorting, dataGrouper } from '@/components/module/dataformat'
 import { setLayout } from '@/components/module/layout'
 
 import API from '@/apis'
@@ -165,12 +109,26 @@ const getEvent3 = async () => {
   }
 }
 
+const getEvent4 = async () => {
+  try {
+    const { data } = await API.event4()
+    const rawData = dataFormatter(data)
+    dataGrouper(rawData, { codes: ['ip_country', 'ip_region', 'ip_city'], value: 'unique_view' })
+
+    return rawData
+  } catch (error) {
+    console.error('@@ getEvent1 > ', error)
+    return []
+  }
+}
+
 /**
  * init 함수
  */
 const init = async () => {
   const data1 = await getEvent1()
   const data3 = await getEvent3()
+  const data4 = await getEvent4()
 
   const unique = { value: 0, variance: 0 } // 접속 유저의 총합
   const event = { value: 0, variance: 0 } // 접속 횟수의 총합
@@ -194,9 +152,9 @@ const init = async () => {
     unit_widget2: { component: markRaw(UnitCountWidget), props: { value: event.value, variance: event.variance } },
     dau_widget: { component: markRaw(DAUWidget), props: { data: data1 } },
     pie_widget: { component: markRaw(TopReferralWidget), props: { data: data3 } },
-    grid_widget: { component: markRaw(TopReferralGrid), props: { value: 0 } }
+    grid_widget: { component: markRaw(TopReferralGrid), props: { data: data4 } }
   }
-  console.log(setLayout(components), '휴ㅠ?')
+  // console.log(setLayout(components), '--')
   layout.value = setLayout(components)
 }
 
@@ -211,14 +169,14 @@ init()
   overflow: hidden;
   position: relative;
 }
-.vue-grid-item.-disabled::after {
+/*.vue-grid-item.-disabled::after {
   content: '';
   display: block;
   position: absolute;
   top: 0; right: 0; left: 0; bottom: 0;
   background-color: #d9d9d9;
   opacity: 0.2;
-}
+}*/
 
 /* .vue-grid-item::deep .vgl-item__resizer {
   border: 1px solid blue;
