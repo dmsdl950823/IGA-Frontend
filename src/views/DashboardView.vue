@@ -113,9 +113,9 @@ const getEvent4 = async () => {
   try {
     const { data } = await API.event4()
     const rawData = dataFormatter(data)
-    dataGrouper(rawData, { codes: ['ip_country', 'ip_region', 'ip_city'], value: 'unique_view' })
+    const grouper = dataGrouper(rawData, { codes: ['ip_country', 'ip_region', 'ip_city'], value: 'unique_view' })
 
-    return rawData
+    return grouper
   } catch (error) {
     console.error('@@ getEvent1 > ', error)
     return []

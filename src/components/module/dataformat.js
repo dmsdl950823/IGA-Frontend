@@ -53,41 +53,44 @@ export const dataFormatter = data => {
 }
 
 /**
- * Tree 형식으로 가공
- * @param { Array } data
- * @param { Object } groupKeys // 키를 여러개 받으면 그거에 맞춰서 가공함 [key-value] 용으로 사용(키는 순서를 맞춰서 넣어야 함)
+ * Grid 그룹핑을 위한 데이터 가공
  */
 export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined }) => {
   const { codes, value } = groupKeys
   if (!codes.length) return
   const max = codes.length
 
-  // const recursion = items => {
-  //   if (!items.children) return
-  // }
+  // console.log(data, 'ㅎㅎ')
 
-  // 1차 그룹핑
   const grouping = (items, codeIdx) => {
+    // N차 그룹핑
     const group = {}
     const code = codes[codeIdx]
 
     for (const item of items) {
       const key = item[code]
-      const d = { value: item[value], ...item, raw: item }
+      if (!key) continue // "" 인 경우가 있음 (제외)
 
-      if (group[key]) group[key].push(d)
-      else group[key] = [d] // _children 은 삭제용
+      const d = { ...item, raw: item }
+
+      if (!group[key]) group[key] = { value: item[value], _children: [d] }
+      else {
+        group[key].value += item[value] // value 데이터 축적
+        group[key]._children.push(d) // 자식 모으기
+      }
     }
 
+    // children 형식으로 변형
     const result = []
     for (const key in group) {
-      const children = group[key]
-      const item = { label: key, value: 0 }
+      if (!key) continue // "" 인 경우가 있음 (제외)
+
+      const { value, _children } = group[key]
+      const item = { label: key, value }
 
       // 코드 key 나열 순서대로 재귀함수 실행
-      if (codeIdx < max) {
-        if (children.length) item.children = grouping(children, codeIdx + 1)
-        else item.raw = children[0] // 마지막 자식인 경우
+      if (codeIdx <= max) {
+        if (_children.length) item.children = grouping(_children, codeIdx + 1)
       }
 
       result.push(item)
@@ -97,5 +100,6 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
   }
 
   const result = grouping(data, 0)
-  console.log(result)
+  // console.log(result)
+  return result
 }
