@@ -77,12 +77,12 @@ const THead = {
 
     const toggleLabelSort = () => {
       labelSorting.value = (labelSorting.value === 'asc') ? 'desc' : 'asc'
-      emit('sort', labelSorting.value)
+      emit('sort', { key: 'label', status: labelSorting.value })
     }
 
     const toggleValueSort = () => {
       valueSorting.value = (valueSorting.value === 'asc') ? 'desc' : 'asc'
-      emit('sort', valueSorting.value)
+      emit('sort', { key: 'value', status: valueSorting.value })
     }
 
     return {
@@ -143,19 +143,19 @@ export default {
     rawData.value = setStatus(treeData, 0)
     // console.log(rawData.value, 'ㅇ?')
 
-    const deepSort = (items, status) => {
-      const sorted = sorting(items, 'label', status)
+    const deepSort = ({ data: items, key, status }) => {
+      const sorted = sorting(items, key, status)
       for (const item of sorted) {
         item.isOpen = false
-        if (item.children) item.children = deepSort(item.children, status)
+        if (item.children) item.children = deepSort({ data: item.children, key, status })
       }
       return sorted
     }
 
     // header 를 누르면 데이터를 sorting 하는 함수
-    const sortData = (status) => {
+    const sortData = ({ key, status }) => {
       const clone = JSON.parse(JSON.stringify(rawData.value)) // 복제
-      rawData.value = deepSort(clone, status)
+      rawData.value = deepSort({ data: clone, key, status })
       // console.log(rawData.value)
     }
 

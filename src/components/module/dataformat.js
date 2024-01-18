@@ -61,9 +61,9 @@ export const dataFormatter = data => {
 export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined }) => {
   const { codes, value } = groupKeys
   if (!codes.length) return
-  const max = codes.length
+  const max = codes.length - 1
 
-  // console.log(data, 'ㅎㅎ')
+  console.log(data, 'ㅎㅎ')
 
   const grouping = (items, codeIdx) => {
     // N차 그룹핑
@@ -71,8 +71,8 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
     const code = codes[codeIdx]
 
     for (const item of items) {
-      const key = item[code]
-      if (!key) continue // "" 인 경우가 있음 (제외?)
+      const key = item[code] || '-'
+      // if (!key) continue // "" 인 경우가 있음 (제외? => 제외하면 데이터 수가 안맞음)
 
       const d = { ...item, raw: item }
 
@@ -86,7 +86,7 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
     // children 형식으로 변형
     const result = []
     for (const key in group) {
-      if (!key) continue // "" 인 경우가 있음 (제외?)
+      // if (!key) continue // "" 인 경우가 있음 (제외? => 제외하면 데이터 수가 안맞음)
 
       const { value, _children } = group[key]
       const item = { label: key || '-', value }
