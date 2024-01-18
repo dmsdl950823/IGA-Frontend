@@ -7,26 +7,27 @@ const widgetProps = [
 ]
 
 const defaultLayout = [
-  { x: 0, y: 0, w: 5, h: 3, idx: 0 },
-  { x: 5, y: 0, w: 5, h: 3, idx: 1 },
-  { x: 0, y: 0, w: 10, h: 6, idx: 2 },
-  { x: 0, y: 0, w: 5, h: 6, idx: 3 },
-  { x: 5, y: 0, w: 5, h: 6, idx: 4 }
+  { x: 0, y: 0, w: 5, h: 3, i: 0 },
+  { x: 5, y: 0, w: 5, h: 3, i: 1 },
+  { x: 0, y: 0, w: 10, h: 6, i: 2 },
+  { x: 0, y: 0, w: 5, h: 6, i: 3 },
+  { x: 5, y: 0, w: 5, h: 6, i: 4 }
 ]
 
 // const localstorage = null
 
 export const setLayout = (components = {}) => {
   const layout = []
-  // if (localstorage)
+  const savedLayout = JSON.parse(localStorage.getItem('layout'))
+  const initLayout = savedLayout || [...defaultLayout]
 
   // 기본 porps + 변경된 props 통합
-  for (const { idx, ...info } of defaultLayout) {
-    const item = widgetProps[idx]
+  for (const { i, ...info } of initLayout) {
+    const item = widgetProps[i]
     const { component = null, props: newProps = {} } = components[item.key]
     const props = { ...item.props, ...newProps }
 
-    layout.push({ i: idx, ...info, ...item, props, component })
+    layout.push({ i, ...info, ...item, props, component })
   }
 
   // console.log(layout)

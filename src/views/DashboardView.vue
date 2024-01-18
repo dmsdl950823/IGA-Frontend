@@ -1,7 +1,11 @@
 <template>
   <div class="bg-gray-100">
     <!-- Navigation -->
-    <HeaderArea @change="change" />
+    <HeaderArea
+      @change="change"
+      @save="saveLayoutPosition"
+      @cancel="cancelLayoutPosition"
+    />
 
     <!-- Dashboard Main Content -->
     <main class="container mx-auto mt-8">
@@ -58,14 +62,20 @@ import API from '@/apis'
 // =======
 
 const editable = ref(false) // 편집중 여부
-const change = (e) => { editable.value = e.value }
 
 // layout default 값 정의
 const layout = ref([])
+const tempLayout = ref([])
 
 const layoutUpdated = (updatedLayout) => {
   // 레이아웃 업데이트 시 호출되는 메소드
-  // console.log('Layout Updated:', updatedLayout)
+  console.log('Layout Updated:', updatedLayout)
+  console.log('Layout:', layout.value)
+}
+
+const change = (e) => {
+  editable.value = e.value
+  tempLayout.value = layout.value.map(({ component, ...item }) => item) // 현재 위치 정보 상태를 저장하는 임시 배열
 }
 
 /**
@@ -122,6 +132,33 @@ const getEvent4 = async () => {
   }
 }
 
+// 위치 편집 저장 : 저장은 현재 그대로 그냥 저장하면 됨
+const saveLayoutPosition = () => {
+  const position = layout.value.map(({ component, ...item }) => item)
+  localStorage.setItem('layout', JSON.stringify(position))
+  editable.value = false
+}
+
+// 위치 편집 취소 : 기존의 layout 을 다시 복구
+const cancelLayoutPosition = () => {
+  const components = {}
+  for (const item of layout.value) {
+    components[item.i] = item.component
+  }
+
+  // 기존의 컴포넌트는 그대로 상태를 유지해야하므로 keep
+  const result = []
+  for (let i = 0; i < tempLayout.value.length; i++) {
+    const item = tempLayout.value[i]
+    result.push({ ...item, component: components[i] })
+  }
+
+  layout.value = result
+  tempLayout.value = []
+
+  editable.value = false
+}
+
 /**
  * init 함수
  */
@@ -155,6 +192,7 @@ const init = async () => {
     grid_widget: { component: markRaw(TopReferralGrid), props: { data: data4 } }
   }
   // console.log(setLayout(components), '--')
+
   layout.value = setLayout(components)
 }
 

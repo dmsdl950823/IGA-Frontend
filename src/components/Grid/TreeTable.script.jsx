@@ -14,9 +14,9 @@ const Node = {
       isOpen.value = newValue.isOpen
     }, { deep: true })
 
+    // open 여부 결정
     const toggle = () => {
       isOpen.value = !isOpen.value
-      console.log(props.isOpen, isOpen.value)
     }
 
     return {
@@ -152,6 +152,7 @@ export default {
       return sorted
     }
 
+    // header 를 누르면 데이터를 sorting 하는 함수
     const sortData = (status) => {
       const clone = JSON.parse(JSON.stringify(rawData.value)) // 복제
       rawData.value = deepSort(clone, status)
