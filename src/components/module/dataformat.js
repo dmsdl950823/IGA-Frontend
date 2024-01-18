@@ -63,7 +63,7 @@ export const dataGrouper = (data = [], groupKeys = { codes: [], value: undefined
   if (!codes.length) return
   const max = codes.length - 1
 
-  console.log(data, 'ㅎㅎ')
+  // console.log(data, '기본 데이터')
 
   const grouping = (items, codeIdx) => {
     // N차 그룹핑

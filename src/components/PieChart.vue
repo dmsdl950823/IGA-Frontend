@@ -76,7 +76,7 @@ const option = ref({
   },
   series: [
     {
-      name: 'Traffic Sources',
+      name: 'Top Referral',
       type: 'pie',
       radius: '60%',
       center: ['50%', '40%'],

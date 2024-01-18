@@ -16,3 +16,11 @@
   --vgl-resizer-border-color: #444;
   --vgl-resizer-border-width: 2px; */
 }
+
+.vgl-item__resizer {
+  width: 30px;
+  height: 30px;
+}
+.vgl-item__resizer::before {
+  content: none;
+}

@@ -59,8 +59,6 @@ import { setLayout } from '@/components/module/layout'
 
 import API from '@/apis'
 
-// =======
-
 const editable = ref(false) // 편집중 여부
 
 // layout default 값 정의
@@ -183,7 +181,7 @@ const init = async () => {
   event.variance = Number(yesterday.page_view) - Number(today.page_view)
 
   // 최종 결과 값 저장
-  // 차트
+  // 레이아웃, props, component 연결
   const components = {
     unit_widget1: { component: markRaw(UnitCountWidget), props: { value: unique.value, variance: unique.variance } },
     unit_widget2: { component: markRaw(UnitCountWidget), props: { value: event.value, variance: event.variance } },
@@ -201,27 +199,16 @@ init()
 </script>
 
 <style scoped>
-
-/* 위젯 스타일을 추가할 수 있습니다. */
 .vue-grid-item {
   overflow: hidden;
   position: relative;
 }
-/*.vue-grid-item.-disabled::after {
+.vue-grid-item.-disabled::after {
   content: '';
   display: block;
   position: absolute;
-  top: 0; right: 0; left: 0; bottom: 0;
-  background-color: #d9d9d9;
+  top: 30px; right: 30px; left: 30px; bottom: 30px;
+  background-color: #fff;
   opacity: 0.2;
-}*/
-
-/* .vue-grid-item::deep .vgl-item__resizer {
-  border: 1px solid blue;
-  width: 20px;
-  height: 20px;
 }
-.vue-grid-item::deep .vgl-item__resizer:before {
-  inset: 0 0 0 0;
-} */
 </style>
