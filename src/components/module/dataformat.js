@@ -15,7 +15,10 @@ export const sorting = (data, key, type = 'asc') => {
     desc: { a: 1, b: -1 }
   }[type]
 
+  if (data.length < 2) return data
+
   data.sort((a, b) => {
+    // console.log(a, b, key)
     if (a[key] < b[key]) return value.a
     else if (a[key] > b[key]) return value.b
     return 0
