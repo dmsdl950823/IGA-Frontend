@@ -69,8 +69,8 @@ const tempLayout = ref([])
 
 const layoutUpdated = (updatedLayout) => {
   // 레이아웃 업데이트 시 호출되는 메소드
-  console.log('Layout Updated:', updatedLayout)
-  console.log('Layout:', layout.value)
+  // console.log('Layout Updated:', updatedLayout)
+  // console.log('Layout:', layout.value)
 }
 
 const change = (e) => {
